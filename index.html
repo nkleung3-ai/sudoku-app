@@ -52,7 +52,60 @@
             }
             boardDiv.appendChild(cell);
         }
-        function checkBoard() { alert('下一步我哋再寫檢查答案嘅邏輯！'); }
+function checkBoard() {
+            const cells = document.querySelectorAll('.cell');
+            const grid = [];
+            
+            // 1. 將畫面上 81 格嘅數字讀取，變成一個 9x9 嘅陣列
+            for (let i = 0; i < 9; i++) {
+                grid[i] = [];
+                for (let j = 0; j < 9; j++) {
+                    // 將輸入嘅文字轉做整數
+                    let val = parseInt(cells[i * 9 + j].value);
+                    
+                    // 檢查玩家係咪有漏填，或者填咗非 1-9 嘅數字
+                    if (isNaN(val) || val < 1 || val > 9) {
+                        alert('仲有空格未填，或者填錯咗無效嘅數字呀！');
+                        return; // 終止檢查
+                    }
+                    grid[i][j] = val;
+                }
+            }
+
+            // 2. 準備一個小工具：用嚟檢查 9 個數字有無重複 (利用 Set 集合特性)
+            function isValidSet(arr) {
+                return new Set(arr).size === 9;
+            }
+
+            // 3. 檢查每一橫行 (Row) 同每一直列 (Column)
+            for (let i = 0; i < 9; i++) {
+                let row = [];
+                let col = [];
+                for (let j = 0; j < 9; j++) {
+                    row.push(grid[i][j]); // 收集橫行數字
+                    col.push(grid[j][i]); // 收集直列數字
+                }
+                if (!isValidSet(row)) { alert('橫行有重複數字或者錯咗，再檢查吓！'); return; }
+                if (!isValidSet(col)) { alert('直列有重複數字或者錯咗，再檢查吓！'); return; }
+            }
+
+            // 4. 檢查每一個 3x3 宮格 (Box)
+            for (let boxRow = 0; boxRow < 3; boxRow++) {
+                for (let boxCol = 0; boxCol < 3; boxCol++) {
+                    let box = [];
+                    for (let i = 0; i < 3; i++) {
+                        for (let j = 0; j < 3; j++) {
+                            // 找出每個 3x3 宮格對應嘅正確位置
+                            box.push(grid[boxRow * 3 + i][boxCol * 3 + j]);
+                        }
+                    }
+                    if (!isValidSet(box)) { alert('有 3x3 宮格入面出現咗重複數字，再睇睇！'); return; }
+                }
+            }
+
+            // 5. 如果上面全部檢查都無彈出錯誤，即係過晒關！
+            alert('🎉 恭喜你！答案完全正確！你太勁啦！');
+        }
         
         // 啟動離線大管家
         if ('serviceWorker' in navigator) {
