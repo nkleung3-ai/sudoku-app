@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>簡單數獨遊戲</title>
+    <!-- 連結 App 身份證 -->
+    <link rel="manifest" href="manifest.json">
+    <style>
+        body { font-family: sans-serif; display: flex; flex-direction: column; align-items: center; background-color: #f4f4f9; margin-top: 50px; }
+        h1 { color: #333; }
+        #board { display: grid; grid-template-columns: repeat(9, 40px); grid-template-rows: repeat(9, 40px); gap: 0px; border: 3px solid #333; background-color: #333; }
+        .cell { width: 100%; height: 100%; background-color: white; font-size: 20px; text-align: center; border: 1px solid #ccc; outline: none; box-sizing: border-box; }
+        .cell:nth-child(3n) { border-right: 2px solid #333; }
+        .cell:nth-child(9n) { border-right: none; }
+        .bottom-border { border-bottom: 2px solid #333 !important; }
+        .fixed { background-color: #e0e0e0; font-weight: bold; color: #333; }
+        .editable { color: #0056b3; }
+        button { margin-top: 20px; padding: 10px 20px; font-size: 16px; cursor: pointer; background-color: #4CAF50; color: white; border: none; border-radius: 5px; }
+    </style>
+</head>
+<body>
+    <h1>數獨遊戲</h1>
+    <div id="board"></div>
+    <button onclick="checkBoard()">完成！檢查答案</button>
+
+    <script>
+        const puzzle = [
+            5, 3, 0, 0, 7, 0, 0, 0, 0,
+            6, 0, 0, 1, 9, 5, 0, 0, 0,
+            0, 9, 8, 0, 0, 0, 0, 6, 0,
+            8, 0, 0, 0, 6, 0, 0, 0, 3,
+            4, 0, 0, 8, 0, 3, 0, 0, 1,
+            7, 0, 0, 0, 2, 0, 0, 0, 6,
+            0, 6, 0, 0, 0, 0, 2, 8, 0,
+            0, 0, 0, 4, 1, 9, 0, 0, 5,
+            0, 0, 0, 0, 8, 0, 0, 7, 9
+        ];
+        const boardDiv = document.getElementById('board');
+        for (let i = 0; i < 81; i++) {
+            let cell = document.createElement('input');
+            cell.type = 'number';
+            cell.min = 1; cell.max = 9; cell.className = 'cell';
+            let row = Math.floor(i / 9);
+            if (row === 2 || row === 5) cell.classList.add('bottom-border');
+            if (puzzle[i] !== 0) {
+                cell.value = puzzle[i];
+                cell.readOnly = true;
+                cell.classList.add('fixed');
+            } else {
+                cell.classList.add('editable');
+            }
+            boardDiv.appendChild(cell);
+        }
+        function checkBoard() { alert('下一步我哋再寫檢查答案嘅邏輯！'); }
+        
+        // 啟動離線大管家
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+    </script>
+</body>
+</html>
